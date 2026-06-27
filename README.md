@@ -1,8 +1,6 @@
 # ReelMind — Autonomous Short-Video Recommendation Infrastructure
 
 <div align="center">
-  <img src="frontend/assets/dashboard_preview.png" alt="ReelMind Analytics Dashboard" width="800"/>
-  <br/>
   <em>A production-grade ML infrastructure simulating the backend of platforms like TikTok, YouTube Shorts, and Instagram Reels.</em>
 </div>
 
