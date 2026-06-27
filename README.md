@@ -3,6 +3,14 @@
 <div align="center">
   <em>A production-grade ML infrastructure simulating the backend of platforms like TikTok, YouTube Shorts, and Instagram Reels.</em>
 </div>
+<br/>
+<div align="center">
+  <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/PyTorch-DeepFM%20%7C%20Two--Tower-ee4c2c.svg" alt="PyTorch">
+  <img src="https://img.shields.io/badge/FastAPI-Microservices-009688.svg" alt="FastAPI">
+  <img src="https://img.shields.io/badge/FAISS-Vector%20Search-yellow.svg" alt="FAISS">
+  <img src="https://img.shields.io/badge/RL-Thompson%20Sampling-ff69b4.svg" alt="RL">
+</div>
 
 ---
 
