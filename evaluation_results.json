@@ -1,0 +1,13 @@
+{
+  "Recall@10": 0.3282,
+  "Recall@50": 0.8495,
+  "Recall@100": 0.9569,
+  "NDCG@10": 0.3946,
+  "NDCG@20": 0.5029,
+  "MRR": 0.5846,
+  "AUC-ROC": 1.0,
+  "LogLoss": 0.2328,
+  "eval_time_seconds": 0.008,
+  "num_users": 200,
+  "num_videos": 500
+}

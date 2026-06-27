@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReelMind — Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 16px 20px;
+            background: rgba(10,10,10,0.95);
+            border-bottom: 1px solid #1a1a1a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .nav-link:hover { color: #fff; }
+        .nav-link.active {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        /* Layout */
+        .page { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .page-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 30px;
+        }
+
+        .grid { display: grid; grid-template-columns: 340px 1fr; gap: 24px; }
+        @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+        /* Cards */
+        .card {
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        /* Session Stats */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 14px;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: rgba(255,255,255,0.5); }
+        .stat-value { font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .stat-value.green { color: #25f4ee; }
+        .stat-value.red { color: #fe2c55; }
+        .stat-value.amber { color: #fbbf24; }
+
+        /* Affinity Bars */
+        .affinity-item {
+            margin-bottom: 14px;
+        }
+        .affinity-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .affinity-name { text-transform: capitalize; color: rgba(255,255,255,0.7); }
+        .affinity-score { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: #25f4ee; }
+        .affinity-bar-bg {
+            height: 6px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .affinity-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #25f4ee, #fe2c55);
+            transition: width 0.5s ease;
+        }
+
+        /* Feed Explanation Table */
+        .feed-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .feed-table th {
+            text-align: left;
+            padding: 8px 10px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 600;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .feed-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #111;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .feed-table tr:hover { background: #1a1a1a; }
+
+        .tag {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .tag-category {
+            background: rgba(37,244,238,0.1);
+            color: #25f4ee;
+        }
+        .tag-explore {
+            background: rgba(251,191,36,0.15);
+            color: #fbbf24;
+        }
+
+        /* Pipeline Timings */
+        .pipeline-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .pipeline-label {
+            width: 140px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            flex-shrink: 0;
+        }
+        .pipeline-bar-bg {
+            flex: 1;
+            height: 20px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .pipeline-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: #000;
+        }
+        .bar-purple { background: #a78bfa; }
+        .bar-green { background: #25f4ee; }
+        .bar-amber { background: #fbbf24; }
+        .bar-red { background: #fe2c55; }
+        .bar-blue { background: #60a5fa; }
+
+        /* Event Log */
+        .event-log {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .event-log::-webkit-scrollbar { width: 4px; }
+        .event-log::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        .event-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #111;
+            color: rgba(255,255,255,0.5);
+        }
+        .event-type-like { color: #fe2c55; }
+        .event-type-skip { color: rgba(255,255,255,0.3); }
+        .event-type-watch { color: #25f4ee; }
+        .event-type-share { color: #fbbf24; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+        }
+        .empty-state .emoji { font-size: 32px; margin-bottom: 10px; }
+
+        /* Refresh button */
+        .refresh-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #e5e5e5;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .refresh-btn:hover { background: #222; border-color: #555; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <a href="/" class="nav-link">Feed</a>
+            <a href="/analytics" class="nav-link active">Analytics</a>
+            <a href="/dashboard" class="nav-link">Pipeline</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <select id="user-select" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:5px 10px;border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;outline:none;">
+                <option value="u_100">User #100</option>
+                <option value="u_200">User #200</option>
+                <option value="u_300">User #300</option>
+                <option value="u_500">User #500</option>
+            </select>
+            <button id="btn-cold-start" style="background:#fe2c55;border:none;color:#fff;padding:5px 14px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">+ New User</button>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <h1 class="page-title">Recommendation Analytics</h1>
+                <p class="page-subtitle">User: <span id="uid" style="color:#25f4ee;">u_100</span> — Live session signals from the ML pipeline</p>
+            </div>
+            <button class="refresh-btn" onclick="fetchProfile()">↻ Refresh</button>
+        </div>
+
+        <div class="grid">
+            <!-- Left Column: User Profile -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <!-- Session Stats -->
+                <div class="card">
+                    <div class="card-title">Session Stats</div>
+                    <div id="session-stats">
+                        <div class="empty-state"><div class="emoji">📊</div>Interact with the feed first</div>
+                    </div>
+                </div>
+
+                <!-- Category Affinities -->
+                <div class="card">
+                    <div class="card-title">Category Affinities</div>
+                    <div id="affinities">
+                        <div class="empty-state"><div class="emoji">🧠</div>Like/skip videos to build affinities</div>
+                    </div>
+                </div>
+
+                <!-- Event Log -->
+                <div class="card">
+                    <div class="card-title">Recent Events</div>
+                    <div id="event-log" class="event-log">
+                        <div class="empty-state"><div class="emoji">📝</div>No events yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Feed Explanation + Pipeline -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <!-- Pipeline Latency -->
+                <div class="card">
+                    <div class="card-title">Last Pipeline Execution</div>
+                    <div id="pipeline-timings">
+                        <div class="empty-state"><div class="emoji">⚡</div>Load the feed to see pipeline timings</div>
+                    </div>
+                </div>
+
+                <!-- Feed Explanation -->
+                <div class="card">
+                    <div class="card-title">Current Feed — Why Each Video Was Recommended</div>
+                    <div id="feed-explanation">
+                        <div class="empty-state"><div class="emoji">🎯</div>Load the feed to see recommendation explanations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/analytics.js"></script>
+</body>
+</html>

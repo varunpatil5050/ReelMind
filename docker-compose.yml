@@ -1,0 +1,137 @@
+# ReelMind — Local Development Infrastructure
+# Usage: docker compose up -d
+# Provides: Kafka, Redis, PostgreSQL, Zookeeper, Prometheus, Grafana
+
+services:
+  # ─── Kafka Ecosystem ──────────────────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: reelmind-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+    healthcheck:
+      test: echo ruok | nc localhost 2181 | grep imok
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: reelmind-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 6
+      KAFKA_LOG_RETENTION_HOURS: 168  # 7 days
+      KAFKA_MESSAGE_MAX_BYTES: 10485760
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:29092 --list
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  # ─── Data Stores ──────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: reelmind-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: reelmind-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: reelmind
+      POSTGRES_USER: reelmind
+      POSTGRES_PASSWORD: reelmind_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: pg_isready -U reelmind
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ─── Monitoring ───────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.50.0
+    container_name: reelmind-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+
+  grafana:
+    image: grafana/grafana:10.3.0
+    container_name: reelmind-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: reelmind
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infra/monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  # ─── MLOps ────────────────────────────────────────────────────────────────
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.11.0
+    container_name: reelmind-mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql://reelmind:reelmind_dev@postgres:5432/reelmind
+      MLFLOW_DEFAULT_ARTIFACT_ROOT: /mlflow/artifacts
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://reelmind:reelmind_dev@postgres:5432/reelmind --default-artifact-root /mlflow/artifacts
+    volumes:
+      - mlflow-data:/mlflow/artifacts
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  zookeeper-data:
+  kafka-data:
+  redis-data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:
+  mlflow-data:

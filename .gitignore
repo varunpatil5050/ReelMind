@@ -1,0 +1,45 @@
+# Data and model artifacts
+data/
+*.parquet
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.venv/
+venv/
+
+# Docker volumes
+docker-volumes/
+
+# MLflow artifacts (local)
+mlruns/
+mlartifacts/
+
+# Coverage
+htmlcov/
+.coverage
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model checkpoints (large)
+*.pt
+*.pth
+*.onnx
+*.plan
+!configs/*.yaml

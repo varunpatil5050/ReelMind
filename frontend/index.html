@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ReelMind</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="top-nav">
+        <div class="nav-left">
+            <a href="/" class="nav-link active">Feed</a>
+            <a href="/analytics" class="nav-link">Analytics</a>
+            <a href="/dashboard" class="nav-link">Pipeline</a>
+        </div>
+        <div class="nav-right">
+            <select id="user-select" class="user-select">
+                <option value="u_100">User #100</option>
+                <option value="u_200">User #200</option>
+                <option value="u_300">User #300</option>
+                <option value="u_500">User #500</option>
+            </select>
+            <button id="btn-cold-start" class="cold-start-btn">+ New User</button>
+        </div>
+    </nav>
+
+    <!-- Personalization Toast -->
+    <div id="personalization-toast" class="toast hidden">
+        <span class="toast-icon">🧠</span>
+        <span class="toast-text">Recommendations updating...</span>
+    </div>
+
+    <!-- Feed Container -->
+    <main id="feed-container">
+        <!-- Cards injected by JS -->
+    </main>
+
+    <!-- Video Card Template -->
+    <template id="video-card-template">
+        <article class="video-card">
+            <video class="video-player" playsinline muted loop preload="metadata"></video>
+            <div class="card-overlay">
+                <!-- Right action bar -->
+                <div class="action-bar">
+                    <button class="action-btn like-btn" data-action="like">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <span class="action-count like-count">0</span>
+                    </button>
+                    <button class="action-btn comment-btn" data-action="comment">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <span class="action-count">—</span>
+                    </button>
+                    <button class="action-btn share-btn" data-action="share">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                        <span class="action-count">Share</span>
+                    </button>
+                </div>
+
+                <!-- Bottom info -->
+                <div class="card-info">
+                    <div class="creator-line">
+                        <span class="creator-avatar"></span>
+                        <span class="creator-name">@creator</span>
+                        <span class="video-category-tag"></span>
+                    </div>
+                    <p class="video-caption"></p>
+                    <div class="ml-debug">
+                        <span class="debug-tag score-tag">Score: —</span>
+                        <span class="debug-tag rank-tag">Rank: —</span>
+                        <span class="debug-tag source-tag">two_tower</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

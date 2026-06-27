@@ -1,0 +1,305 @@
+/* ReelMind — Minimal Dark Theme */
+
+:root {
+    --bg: #000;
+    --surface: #111;
+    --text: #fff;
+    --text-muted: rgba(255,255,255,0.6);
+    --accent: #fe2c55;
+    --accent-glow: rgba(254,44,85,0.3);
+    --glass: rgba(255,255,255,0.08);
+    --glass-border: rgba(255,255,255,0.12);
+    --green: #25f4ee;
+    --radius: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Navigation ────────────────────────────── */
+
+#top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+.nav-link:hover { color: var(--text); }
+.nav-link.active {
+    color: var(--text);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+}
+
+.user-select {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+}
+.user-select option { background: #111; color: #fff; }
+
+.cold-start-btn {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+}
+.cold-start-btn:hover { opacity: 0.85; }
+
+/* ─── Toast ─────────────────────────────────── */
+
+.toast {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    background: rgba(37, 244, 238, 0.15);
+    border: 1px solid rgba(37, 244, 238, 0.3);
+    color: var(--green);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s, transform 0.3s;
+}
+.toast.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+    pointer-events: none;
+}
+.toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ─── Feed Container ────────────────────────── */
+
+#feed-container {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+#feed-container::-webkit-scrollbar { display: none; }
+
+/* ─── Video Card ────────────────────────────── */
+
+.video-card {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    scroll-snap-align: start;
+    background: #000;
+    overflow: hidden;
+}
+
+.video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%);
+}
+
+/* ─── Action Bar (right side) ───────────────── */
+
+.action-bar {
+    position: absolute;
+    right: 16px;
+    bottom: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    pointer-events: auto;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.15s;
+}
+.action-btn:active { transform: scale(0.85); }
+.action-btn svg {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+}
+.action-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.action-btn.liked svg {
+    fill: var(--accent);
+    stroke: var(--accent);
+    animation: heartPop 0.3s ease;
+}
+
+@keyframes heartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* ─── Card Info (bottom) ────────────────────── */
+
+.card-info {
+    padding: 20px;
+    padding-bottom: 40px;
+    pointer-events: none;
+    max-width: calc(100% - 80px);
+}
+
+.creator-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.creator-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #ff7043);
+    border: 2px solid var(--text);
+    flex-shrink: 0;
+}
+
+.creator-name {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.video-category-tag {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: var(--green);
+}
+
+.video-caption {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ─── ML Debug Tags ─────────────────────────── */
+
+.ml-debug {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.debug-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-muted);
+    font-family: 'SF Mono', 'Menlo', monospace;
+}
+
+.score-tag { color: var(--green); border-color: rgba(37,244,238,0.2); }
+.rank-tag { color: #a78bfa; border-color: rgba(167,139,250,0.2); }
+.source-tag { color: #fbbf24; border-color: rgba(251,191,36,0.2); }
+
+/* ─── Loading State ─────────────────────────── */
+
+.loading-card {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--glass-border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
