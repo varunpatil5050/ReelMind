@@ -163,4 +163,4 @@ For a comprehensive breakdown of the mathematics, algorithms, and engineering ch
 * [**Evaluation Metrics**](docs/EVALUATION.md) - Detailed explanation of NDCG, MRR, Recall@K, and how the offline evaluation pipeline generates ground truth.
 
 ---
-*Developed as an advanced M.Tech level demonstration of production AI infrastructure.*
+
